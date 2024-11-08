@@ -9,9 +9,9 @@ namespace api.Mappers
 {
     public static class CommentMapper
     {
-        public static CommenDto ToCommentDto(this Comment commentModel)
+        public static CommentDto ToCommentDto(this Comment commentModel)
         {
-            return new CommenDto{
+            return new CommentDto{
                 Id = commentModel.Id,
                 Title = commentModel.Title,
                 Content = commentModel.Content,
