@@ -41,6 +41,7 @@ namespace api.Controller
         }
 
         [HttpGet("{id:int}")]
+
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             if(!ModelState.IsValid){
