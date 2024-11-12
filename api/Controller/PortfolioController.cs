@@ -60,7 +60,23 @@ namespace api.Controllers
             
             if(portfolioModel == null) return StatusCode(500, "Portföy oluşturulamadı!");
             else return Created();
+        }
 
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeleteAsync(string symbol)
+        {
+            var username = User.GetUserName();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            var userPortfolio = await _portfolioRepo.GetUserPortfolio(appUser);
+
+            var filteredStock = userPortfolio.Where(s => s.Symbol.ToLower() == symbol.ToLower()).ToList();
+
+            if(filteredStock.Count() == 1) await _portfolioRepo.DeletePortfolio(appUser, symbol);
+
+            else return BadRequest("Portföyde hisse bulunmuyor!");
+            return Ok();
         }
     }
 }
