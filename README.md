@@ -1,0 +1,1 @@
+ytdegildir.com kullanıcıların finansal okuryazarlık konusunda bilgi edindiği, portföy takibi yapabildiği, belirli hisselerin güven endeksini görüntüleyebildiği, borsa verilerini takip edebildiği, forum özellikleri (yorum yapma, oy verme, konu başlıklarını tartışma vb.) taşıyan dinamik bir websitesidir. 
