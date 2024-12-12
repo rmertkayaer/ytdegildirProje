@@ -114,4 +114,4 @@ namespace frontend.Controllers
             return HttpContext.Session.GetString("JWTToken") != null;
         }
     }
-} 
+} //aaaaaa
