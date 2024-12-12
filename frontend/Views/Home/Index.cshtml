@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to Stock App</h1>
+    
+    @if (Context.Session.GetString("JWTToken") != null)
+    {
+        <div class="mt-4">
+            <h3>Hello, @Context.Session.GetString("UserName")!</h3>
+            <p>Your email: @Context.Session.GetString("UserEmail")</p>
+            
+            <div class="mt-4">
+                <h4>Quick Links</h4>
+                <div class="list-group">
+                    <a asp-controller="Stock" asp-action="Index" class="list-group-item list-group-item-action">
+                        View Stocks
+                    </a>
+                    <a asp-controller="Portfolio" asp-action="Index" class="list-group-item list-group-item-action">
+                        My Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="mt-4">Please <a asp-controller="Account" asp-action="Login">login</a> to access the application.</p>
+    }
+</div>

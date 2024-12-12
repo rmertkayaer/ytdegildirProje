@@ -1,0 +1,93 @@
+@model List<frontend.Models.PortfolioListViewModel>
+
+@{
+    ViewData["Title"] = "My Portfolio";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Portfolio</h1>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form asp-action="AddStock" method="post" class="form-inline">
+                <div class="input-group">
+                    <input type="text" name="symbol" class="form-control" placeholder="Enter stock symbol (e.g., AAPL)" required />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Add to Portfolio</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Your portfolio is empty. Add some stocks to get started!
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Company Name</th>
+                        <th>Purchase</th>
+                        <th>Last Dividend</th>
+                        <th>Industry</th>
+                        <th>Market Cap</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stock in Model)
+                    {
+                        <tr>
+                            <td>@stock.Symbol</td>
+                            <td>@(string.IsNullOrEmpty(stock.CompanyName) ? "-" : stock.CompanyName)</td>
+                            <td>$@stock.Purchase.ToString("N2")</td>
+                            <td>$@stock.LastDiv.ToString("N2")</td>
+                            <td>@stock.Industry</td>
+                            <td>$@stock.MarketCap.ToString("N0")</td>
+                            <td>
+                                <form asp-action="RemoveStock" method="post" style="display: inline;">
+                                    <input type="hidden" name="symbol" value="@stock.Symbol" />
+                                    <button type="submit" class="btn btn-danger btn-sm" 
+                                            onclick="return confirm('Are you sure you want to remove @stock.Symbol from your portfolio?')">
+                                        Remove
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+} 
