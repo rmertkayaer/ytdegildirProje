@@ -1,0 +1,24 @@
+@model List<frontend.Models.CommentViewModel>
+
+<div class="comments-section mt-4">
+    <h4>Comments</h4>
+    @if (Model != null && Model.Any())
+    {
+        foreach (var comment in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@comment.Title</h5>
+                    <p class="card-text">@comment.Content</p>
+                    <div class="text-muted">
+                        <small>Posted by @comment.CreatedBy on @comment.CreatedOn.ToString("MMM dd, yyyy")</small>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted">No comments yet. Be the first to comment!</p>
+    }
+</div> 

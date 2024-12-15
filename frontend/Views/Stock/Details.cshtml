@@ -45,27 +45,9 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Add Comment</h3>
-        </div>
-        <div class="card-body">
-            <form asp-action="AddComment" method="post">
-                <input type="hidden" name="stockId" value="@Model.Id" />
-                <div class="form-group mb-3">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" required maxlength="100" 
-                           placeholder="Enter a title for your comment">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="content">Content</label>
-                    <textarea class="form-control" id="content" name="content" rows="3" required maxlength="500"
-                            placeholder="Share your thoughts about this stock"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Comment</button>
-            </form>
-        </div>
-    </div>
+
+        @* Add the comment form *@
+        <partial name="_CommentForm" model="@(new ValueTuple<string, int>(Model.Symbol, Model.Id))" />
 
     <div class="card">
         <div class="card-header">
@@ -87,7 +69,7 @@
                                 <small class="text-muted">@comment.CreatedOn.ToString("MMM dd, yyyy HH:mm")</small>
                             </div>
                             <p class="mb-1">@comment.Content</p>
-                            <small class="text-muted">Posted by @comment.AppUser.UserName</small>
+                            <small class="text-muted">Posted by @(string.IsNullOrEmpty(comment.CreatedBy) ? "Anonymous" : comment.CreatedBy)</small>
                         </div>
                     }
                 </div>

@@ -10,9 +10,6 @@ namespace frontend.Models
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public int? StockId { get; set; }
         public string AppUserId { get; set; } = string.Empty;
-        public AppUserViewModel AppUser { get; set; } = new AppUserViewModel();
-
-        // Helper property to display username
-        public string CreatedBy => AppUser?.UserName ?? "Anonymous";
+        public string CreatedBy { get; set; } = string.Empty;
     }
 } 

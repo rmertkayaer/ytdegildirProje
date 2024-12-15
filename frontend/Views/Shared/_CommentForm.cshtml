@@ -1,0 +1,25 @@
+@model (string Symbol, int StockId)
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Add a Comment</h5>
+        <form asp-controller="Comment" asp-action="Create" method="post">
+            <input type="hidden" name="symbol" value="@Model.Symbol" />
+            <input type="hidden" name="stockId" value="@Model.StockId" />
+            
+            <div class="form-group mb-3">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required 
+                       minlength="5" maxlength="140" placeholder="Enter comment title">
+            </div>
+            
+            <div class="form-group mb-3">
+                <label for="content">Content</label>
+                <textarea class="form-control" id="content" name="content" rows="3" required 
+                          minlength="5" maxlength="140" placeholder="Enter your comment"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+    </div>
+</div> 
