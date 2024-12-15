@@ -1,0 +1,105 @@
+@model StockViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Symbol} - Details";
+}
+
+<div class="container">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">@Model.CompanyName (@Model.Symbol)</h2>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h4>Financial Information</h4>
+                        <p><strong>Purchase Price:</strong> $@Model.Purchase.ToString("N2")</p>
+                        <p><strong>Last Dividend:</strong> $@Model.LastDiv.ToString("N2")</p>
+                        <p><strong>Market Cap:</strong> $@Model.MarketCap.ToString("N0")</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h4>Company Information</h4>
+                        <p><strong>Industry:</strong> @Model.Industry</p>
+                        <p><strong>Total Comments:</strong> @Model.Comments.Count</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Add Comment</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="AddComment" method="post">
+                <input type="hidden" name="stockId" value="@Model.Id" />
+                <div class="form-group mb-3">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required maxlength="100" 
+                           placeholder="Enter a title for your comment">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" name="content" rows="3" required maxlength="500"
+                            placeholder="Share your thoughts about this stock"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Comments (@Model.Comments.Count)</h3>
+        </div>
+        <div class="card-body">
+            @if (!Model.Comments.Any())
+            {
+                <p class="text-muted">No comments yet. Be the first to comment!</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedOn))
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-1">@comment.Title</h5>
+                                <small class="text-muted">@comment.CreatedOn.ToString("MMM dd, yyyy HH:mm")</small>
+                            </div>
+                            <p class="mb-1">@comment.Content</p>
+                            <small class="text-muted">Posted by @comment.AppUser.UserName</small>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+} 
