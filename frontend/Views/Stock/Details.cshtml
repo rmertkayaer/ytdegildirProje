@@ -4,7 +4,7 @@
     ViewData["Title"] = $"{Model.Symbol} - Details";
 }
 
-<div class="container">
+<div class="stock-details-container fade-in">
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">
@@ -19,69 +19,148 @@
         </div>
     }
 
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">@Model.CompanyName (@Model.Symbol)</h2>
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="stock-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="stock-title">@Model.Symbol</h1>
+                <h2 class="stock-subtitle">@Model.CompanyName</h2>
+            </div>
+            <a asp-action="Index" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <h4>Financial Information</h4>
-                        <p><strong>Purchase Price:</strong> $@Model.Purchase.ToString("N2")</p>
-                        <p><strong>Last Dividend:</strong> $@Model.LastDiv.ToString("N2")</p>
-                        <p><strong>Market Cap:</strong> $@Model.MarketCap.ToString("N0")</p>
+    </div>
+
+    <!-- Stock Information -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card market-overview-card">
+                <div class="card-header">
+                    <h3 class="mb-0">Stock Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="market-stat">
+                                <label>Purchase Price</label>
+                                <h3 class="value">$@Model.Purchase.ToString("N2")</h3>
+                            </div>
+                            <div class="market-stat">
+                                <label>Last Dividend</label>
+                                <h3 class="value">$@Model.LastDiv.ToString("N2")</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="market-stat">
+                                <label>Market Cap</label>
+                                <h3 class="value">$@Model.MarketCap.ToString("N0")</h3>
+                            </div>
+                            <div class="market-stat">
+                                <label>Industry</label>
+                                <h3 class="value">@Model.Industry</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <h4>Company Information</h4>
-                        <p><strong>Industry:</strong> @Model.Industry</p>
-                        <p><strong>Total Comments:</strong> @Model.Comments.Count</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card quick-stats-card">
+                <div class="card-header">
+                    <h3 class="mb-0">Quick Stats</h3>
+                </div>
+                <div class="card-body">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Comments</span>
+                        <span class="stat-value">@Model.Comments.Count</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Last Updated</span>
+                        <span class="stat-value">@DateTime.Now.ToString("MMM dd, yyyy")</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-        @* Add the comment form *@
-        <partial name="_CommentForm" model="@(new ValueTuple<string, int>(Model.Symbol, Model.Id))" />
-
-    <div class="card">
-        <div class="card-header">
-            <h3>Comments (@Model.Comments.Count)</h3>
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Add Comment</h3>
+            </div>
+            <div class="card-body">
+                <partial name="_CommentForm" model="@(new ValueTuple<string, int>(Model.Symbol, Model.Id))" />
+            </div>
         </div>
-        <div class="card-body">
-            @if (!Model.Comments.Any())
-            {
-                <p class="text-muted">No comments yet. Be the first to comment!</p>
-            }
-            else
-            {
-                <div class="list-group">
-                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedOn))
-                    {
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-1">@comment.Title</h5>
-                                <small class="text-muted">@comment.CreatedOn.ToString("MMM dd, yyyy HH:mm")</small>
-                            </div>
-                            <p class="mb-1">@comment.Content</p>
-                            <small class="text-muted">Posted by @(string.IsNullOrEmpty(comment.CreatedBy) ? "Anonymous" : comment.CreatedBy)</small>
-                        </div>
-                    }
+
+        <div class="card comments-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Comments (@Model.Comments.Count)</h3>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
+                        Sort by
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="sortComments('newest')">Newest First</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="sortComments('oldest')">Oldest First</a></li>
+                    </ul>
                 </div>
-            }
+            </div>
+            <div class="card-body">
+                @if (!Model.Comments.Any())
+                {
+                    <div class="text-center py-4">
+                        <div class="empty-comments-icon">💭</div>
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="comments-list" id="commentsList">
+                        @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedOn))
+                        {
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <h5 class="comment-title">@comment.Title</h5>
+                                    <span class="comment-date">@comment.CreatedOn.ToString("MMM dd, yyyy HH:mm")</span>
+                                </div>
+                                <p class="comment-content">@comment.Content</p>
+                                <div class="comment-footer">
+                                    <span class="comment-author">
+                                        <i class="fas fa-user"></i>
+                                        @(string.IsNullOrEmpty(comment.CreatedBy) ? "Anonymous" : comment.CreatedBy)
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        // Fade out alerts
         setTimeout(function() {
             $('.alert').fadeOut('slow');
         }, 5000);
+
+        // Sort comments
+        function sortComments(order) {
+            const commentsList = document.getElementById('commentsList');
+            const comments = Array.from(commentsList.children);
+            
+            comments.sort((a, b) => {
+                const dateA = new Date(a.querySelector('.comment-date').textContent);
+                const dateB = new Date(b.querySelector('.comment-date').textContent);
+                return order === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+            
+            comments.forEach(comment => commentsList.appendChild(comment));
+        }
     </script>
 } 

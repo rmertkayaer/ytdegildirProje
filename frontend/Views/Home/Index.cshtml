@@ -1,31 +1,105 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Stock App</h1>
-    
-    @if (Context.Session.GetString("JWTToken") != null)
-    {
-        <div class="mt-4">
-            <h3>Hello, @Context.Session.GetString("UserName")!</h3>
-            <p>Your email: @Context.Session.GetString("UserEmail")</p>
-            
-            <div class="mt-4">
-                <h4>Quick Links</h4>
-                <div class="list-group">
-                    <a asp-controller="Stock" asp-action="Index" class="list-group-item list-group-item-action">
-                        View Stocks
+<div class="hero-section fade-in">
+    <div class="hero-content text-center">
+        <h1 class="hero-title">YTDegildir.com'a Hoş Geldiniz</h1>
+        <p class="hero-subtitle">Bilgi Güçtür.</p>
+        
+        @if (Context.Session.GetString("JWTToken") != null)
+        {
+            <div class="user-welcome mt-4 fade-in">
+                <div class="welcome-card">
+                    <div class="welcome-icon">👋</div>
+                    <h3>Tekrar hoş geldin, @Context.Session.GetString("UserName")!</h3>
+                    <p class="text-muted">@Context.Session.GetString("UserEmail")</p>
+                </div>
+                
+                <div class="features-grid mt-5">
+                    <a asp-controller="Stock" asp-action="Index" class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h4>Hisseleri Görüntüle</h4>
+                        <p>Mevcut hisseleri keşfet ve analiz et</p>
                     </a>
-                    <a asp-controller="Portfolio" asp-action="Index" class="list-group-item list-group-item-action">
-                        My Portfolio
+                    
+                    <a asp-controller="Portfolio" asp-action="Index" class="feature-card">
+                        <div class="feature-icon">💼</div>
+                        <h4>Portföyüm</h4>
+                        <p>Yatırım portföyünü yönet</p>
                     </a>
+                    
+                    <a asp-controller="Bilgi" asp-action="Index" class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h4>Finansal Okuryazarlık</h4>
+                        <p>Finansal bilginizi artırın</p>
+                    </a>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h4>Hisse Güven Endeksi</h4>
+                        <p>YAKINDA...</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <p class="mt-4">Please <a asp-controller="Account" asp-action="Login">login</a> to access the application.</p>
-    }
+        }
+        else
+        {
+            <div class="cta-section mt-5 fade-in">
+                <div class="cta-card">
+                    <h3>Yatırım Yolculuğunuza Bugün Başlayın</h3>
+                    <p class="mb-4">YTD Stock ile akıllı kararlar alan binlerce yatırımcıya katılın</p>
+                    <div class="cta-buttons">
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg me-3">Giriş Yap</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary btn-lg">Kayıt Ol</a>
+                    </div>
+                </div>
+                
+                <div class="features-section mt-5">
+                    <h3 class="text-center mb-4">Neden YTD Stock?</h3>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🚀</div>
+                            <h4>Anlık Güncellemeler</h4>
+                            <p>Anlık borsa güncellemeleri alın</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔒</div>
+                            <h4>Güvenli Platform</h4>
+                            <p>Yatırımlarınız bizimle güvende</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h4>Mobil Uyumlu</h4>
+                            <p>Her yerden, her zaman erişim</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💡</div>
+                            <h4>Akıllı Analizler</h4>
+                            <p>Bilinçli kararlar alın</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Animate features on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.feature-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('feature-card-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => observer.observe(card));
+        });
+    </script>
+}

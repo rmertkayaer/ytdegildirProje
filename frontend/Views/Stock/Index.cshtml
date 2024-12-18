@@ -4,57 +4,73 @@
     ViewData["Title"] = "Stocks";
 }
 
-<div class="container">
+<div class="stock-container fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Available Stocks</h1>
+        <div>
+            <h1 class="stock-title">Available Stocks</h1>
+            <p class="stock-subtitle">Explore and analyze available stocks</p>
+        </div>
     </div>
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">
+        <div class="alert alert-danger slide-in">
+            <i class="fas fa-exclamation-circle me-2"></i>
             @TempData["Error"]
         </div>
     }
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info">
-            No stocks available at the moment.
+        <div class="empty-state-card text-center py-5">
+            <div class="empty-state-icon">📈</div>
+            <h3>No Stocks Available</h3>
+            <p class="text-muted">There are no stocks available at the moment.</p>
         </div>
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Company Name</th>
-                        <th>Purchase</th>
-                        <th>Comments</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var stock in Model)
-                    {
-                        <tr>
-                            <td><strong>@stock.Symbol</strong></td>
-                            <td>@stock.CompanyName</td>
-                            <td>$@stock.Purchase.ToString("N2")</td>
-                            <td>
-                                <span class="badge bg-info">@stock.Comments.Count</span>
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a asp-action="Details" asp-route-id="@stock.Id" 
-                                       class="btn btn-primary btn-sm">View Details</a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="card stock-list-card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Company Name</th>
+                                <th>Purchase Price</th>
+                                <th>Comments</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stock in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="stock-symbol">@stock.Symbol</span>
+                                    </td>
+                                    <td>
+                                        <span class="company-name">@stock.CompanyName</span>
+                                    </td>
+                                    <td>
+                                        <span class="price-value">$@stock.Purchase.ToString("N2")</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@stock.Comments.Count</span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@stock.Id" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-info-circle me-1"></i>View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     }
 </div>

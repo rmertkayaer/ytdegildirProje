@@ -1,0 +1,130 @@
+@{
+    ViewData["Title"] = "Finansal Okuryazarlık";
+}
+
+<div class="bilgi-container fade-in">
+    <div class="bilgi-header">
+        <h1 class="bilgi-title">Finansal Okuryazarlık</h1>
+        <p class="bilgi-subtitle">İleri düzey finansal kavramları öğrenin</p>
+    </div>
+
+    <div class="topics-grid">
+        <!-- Finansal Varlık -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">💰</div>
+                <h2>Finansal Varlık</h2>
+            </div>
+            <div class="topic-content">
+                <p>Bir bireyin sahip olduğu toplam finansal değeri gösteren terimdir. Hisse senetleri, tahviller, hazine bonoları, banka mevduatları, yatırım fonları ve emeklilik hesapları gibi çeşitli finansal araçları kapsar.</p>
+            </div>
+        </div>
+
+        <!-- Hisse Senedi -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">📈</div>
+                <h2>Hisse Senedi</h2>
+            </div>
+            <div class="topic-content">
+                <p>Bir şirketin ortaklık payını gösteren değerli bir belgedir. Yatırımcılara şirketin kârından pay alma ve şirketin değer artışından yararlanma fırsatı sunar.</p>
+            </div>
+        </div>
+
+        <!-- Tahvil -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">📋</div>
+                <h2>Tahvil</h2>
+            </div>
+            <div class="topic-content">
+                <p>Devletler veya şirketler tarafından ihraç edilen borçlanma araçlarıdır. Yatırımcılar belirli periyotlarda faiz geliri elde eder ve vade sonunda ana paralarını geri alırlar.</p>
+            </div>
+        </div>
+
+        <!-- Yatırım Fonu -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">🏦</div>
+                <h2>Yatırım Fonu</h2>
+            </div>
+            <div class="topic-content">
+                <p>Birden fazla yatırımcının kaynaklarını birleştirerek oluşturduğu ve profesyonel bir fon yöneticisi tarafından idare edilen yatırım aracıdır. Çeşitli yatırım araçlarına dağıtılarak risk yayılır.</p>
+            </div>
+        </div>
+
+        <!-- Portföy -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">📊</div>
+                <h2>Portföy</h2>
+            </div>
+            <div class="topic-content">
+                <p>Bir kişi veya kurumun elinde bulunan yatırımların tümüdür. İyi dengelenmiş bir portföy genellikle hisse senetleri, tahviller ve diğer yatırım türlerinin bir karışımını içerir.</p>
+            </div>
+        </div>
+
+        <!-- Volatilite -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">📉</div>
+                <h2>Volatilite</h2>
+            </div>
+            <div class="topic-content">
+                <p>Bir menkul kıymet veya piyasa endeksinin fiyat oynaklığının ölçüsüdür. Volatilite yükseldikçe yatırım aracının riski de artar.</p>
+            </div>
+        </div>
+
+        <!-- Riskten Korunma -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">🛡️</div>
+                <h2>Riskten Korunma (Hedge)</h2>
+            </div>
+            <div class="topic-content">
+                <p>Yatırımcıların maruz kaldığı riskleri azaltmak için kullanılan yöntemdir. Mevcut yatırım pozisyonlarına zıt yönde işlemler yaparak olası kayıplara karşı koruma sağlanır.</p>
+            </div>
+        </div>
+
+        <!-- Kısa Pozisyon -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">⬇️</div>
+                <h2>Kısa Pozisyon (Açığa Satış)</h2>
+            </div>
+            <div class="topic-content">
+                <p>Bir varlığın değerinin düşeceği beklentisiyle, sattıktan sonra daha düşük fiyattan geri almayı planlayarak oluşturulan pozisyondur.</p>
+            </div>
+        </div>
+
+        <!-- Uzun Pozisyon -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <div class="topic-icon">⬆️</div>
+                <h2>Uzun Pozisyon</h2>
+            </div>
+            <div class="topic-content">
+                <p>Finansal bir varlığın değerinin artacağı beklentisiyle o varlığı portföye eklemektir. Değer artışı gerçekleştiğinde, varlık daha yüksek fiyattan satılarak kâr elde edilir.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Animate cards on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.topic-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('topic-card-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => observer.observe(card));
+        });
+    </script>
+} 

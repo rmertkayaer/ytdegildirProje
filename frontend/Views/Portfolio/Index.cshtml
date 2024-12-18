@@ -4,90 +4,184 @@
     ViewData["Title"] = "My Portfolio";
 }
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>My Portfolio</h1>
+<div class="portfolio-container fade-in">
+    <div class="portfolio-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="portfolio-title">My Portfolio</h1>
+                <p class="portfolio-subtitle">Manage your investment portfolio</p>
+            </div>
+            <div class="portfolio-stats">
+                <div class="stat-badge">
+                    <span class="stat-label">Total Stocks</span>
+                    <span class="stat-value">@Model.Count</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">
+        <div class="alert alert-danger slide-in">
+            <i class="fas fa-exclamation-circle me-2"></i>
             @TempData["Error"]
         </div>
     }
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">
+        <div class="alert alert-success slide-in">
+            <i class="fas fa-check-circle me-2"></i>
             @TempData["Success"]
         </div>
     }
 
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <form asp-action="AddStock" method="post" class="form-inline">
+    <div class="card add-stock-card mb-4">
+        <div class="card-body">
+            <h4 class="card-title mb-3">Add New Stock</h4>
+            <form asp-action="AddStock" method="post" class="add-stock-form">
                 <div class="input-group">
-                    <input type="text" name="symbol" class="form-control" placeholder="Enter stock symbol (e.g., AAPL)" required />
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">Add to Portfolio</button>
-                    </div>
+                    <input type="text" name="symbol" class="form-control" placeholder="Enter stock symbol (e.g., AAPL)" 
+                           required pattern="[A-Za-z]+" title="Please enter a valid stock symbol (letters only)" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add to Portfolio
+                    </button>
                 </div>
+                <small class="form-text text-muted">Enter the stock symbol you want to add to your portfolio</small>
             </form>
         </div>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info">
-            Your portfolio is empty. Add some stocks to get started!
+        <div class="empty-state-card text-center py-5">
+            <div class="empty-state-icon mb-3">📈</div>
+            <h3>Your Portfolio is Empty</h3>
+            <p class="text-muted mb-4">Start building your portfolio by adding some stocks!</p>
+            <p class="suggestion-text">Popular stocks: AAPL, GOOGL, MSFT, AMZN</p>
         </div>
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Company Name</th>
-                        <th>Purchase</th>
-                        <th>Last Dividend</th>
-                        <th>Industry</th>
-                        <th>Market Cap</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var stock in Model)
-                    {
+        <div class="card portfolio-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Your Stocks</h3>
+                    <div class="portfolio-actions">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-sort me-1"></i>Sort
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="sortStocks('symbol')">By Symbol</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="sortStocks('price')">By Price</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="sortStocks('marketCap')">By Market Cap</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover" id="portfolioTable">
+                    <thead>
                         <tr>
-                            <td>@stock.Symbol</td>
-                            <td>@(string.IsNullOrEmpty(stock.CompanyName) ? "-" : stock.CompanyName)</td>
-                            <td>$@stock.Purchase.ToString("N2")</td>
-                            <td>$@stock.LastDiv.ToString("N2")</td>
-                            <td>@stock.Industry</td>
-                            <td>$@stock.MarketCap.ToString("N0")</td>
-                            <td>
-                                <form asp-action="RemoveStock" method="post" style="display: inline;">
-                                    <input type="hidden" name="symbol" value="@stock.Symbol" />
-                                    <button type="submit" class="btn btn-danger btn-sm" 
-                                            onclick="return confirm('Are you sure you want to remove @stock.Symbol from your portfolio?')">
-                                        Remove
-                                    </button>
-                                </form>
-                            </td>
+                            <th>Symbol</th>
+                            <th>Company</th>
+                            <th>Purchase</th>
+                            <th>Last Dividend</th>
+                            <th>Industry</th>
+                            <th>Market Cap</th>
+                            <th>Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var stock in Model)
+                        {
+                            <tr class="stock-row" data-symbol="@stock.Symbol" data-price="@stock.Purchase" data-marketcap="@stock.MarketCap">
+                                <td>
+                                    <strong class="stock-symbol">@stock.Symbol</strong>
+                                </td>
+                                <td>@(string.IsNullOrEmpty(stock.CompanyName) ? "-" : stock.CompanyName)</td>
+                                <td>
+                                    <span class="price-value">$@stock.Purchase.ToString("N2")</span>
+                                </td>
+                                <td>$@stock.LastDiv.ToString("N2")</td>
+                                <td>
+                                    <span class="industry-badge">@stock.Industry</span>
+                                </td>
+                                <td>$@stock.MarketCap.ToString("N0")</td>
+                                <td>
+                                    <form asp-action="RemoveStock" method="post" class="d-inline">
+                                        <input type="hidden" name="symbol" value="@stock.Symbol" />
+                                        <button type="submit" class="btn btn-danger btn-sm" 
+                                                onclick="return confirm('Are you sure you want to remove @stock.Symbol from your portfolio?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 </div>
 
 @section Scripts {
     <script>
+        // Fade out alerts
         setTimeout(function() {
             $('.alert').fadeOut('slow');
         }, 5000);
+
+        // Sort functionality
+        function sortStocks(criteria) {
+            const table = document.getElementById('portfolioTable');
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            
+            rows.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(criteria) {
+                    case 'symbol':
+                        valueA = a.querySelector('.stock-symbol').textContent;
+                        valueB = b.querySelector('.stock-symbol').textContent;
+                        return valueA.localeCompare(valueB);
+                    
+                    case 'price':
+                        valueA = parseFloat(a.dataset.price);
+                        valueB = parseFloat(b.dataset.price);
+                        return valueB - valueA;
+                    
+                    case 'marketCap':
+                        valueA = parseFloat(a.dataset.marketcap);
+                        valueB = parseFloat(b.dataset.marketcap);
+                        return valueB - valueA;
+                }
+            });
+            
+            const tbody = table.querySelector('tbody');
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Add animation
+            rows.forEach(row => {
+                row.style.animation = 'none';
+                row.offsetHeight; // Trigger reflow
+                row.style.animation = 'fadeIn 0.5s ease-out';
+            });
+        }
+
+        // Add hover effect to table rows
+        document.querySelectorAll('.stock-row').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
     </script>
 } 
